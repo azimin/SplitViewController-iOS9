@@ -186,7 +186,7 @@ class AZSplitController: UIViewController {
       mainController.viewControllers = controllers.count > 0 ? controllers : [templateViewController]
       mainController.az_addMenuButton()
       
-      let sideRect = CGRect(x: 0, y: 0, width: sideCurrentWidth, height: size.height)
+      let sideRect = CGRect(x: 0, y: 0, width: sideWidth, height: size.height)
       let mainRect = CGRect(x: sideCurrentWidth, y: 0, width: size.width - sideCurrentWidth, height: size.height)
       
       mainControllerSize = mainRect.size
