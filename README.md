@@ -1,12 +1,14 @@
 # SplitViewController-iOS9
 Split View Controller that supports iOS 9 multitasking for iPad
 
+### iPad:
 <img src=Sceenshots/iPad_1.png width=400 height=300 />
--R-
+-
 <img src=Sceenshots/iPad_2.png width=400 height=300 />
 
+### iPhone 6 (Custom rules)
 <img src=Sceenshots/iPhone6_1.png width=600 height=337 />
--R-
+-
 <img src=Sceenshots/iPhone6_2.png width=190 height=337 />
 
 #### Creating
