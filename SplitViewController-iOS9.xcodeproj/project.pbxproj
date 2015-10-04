@@ -11,9 +11,9 @@
 		925F4B101BBEA378009070F7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 925F4B0E1BBEA378009070F7 /* Main.storyboard */; };
 		925F4B121BBEA378009070F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 925F4B111BBEA378009070F7 /* Assets.xcassets */; };
 		925F4B151BBEA378009070F7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 925F4B131BBEA378009070F7 /* LaunchScreen.storyboard */; };
-		925F4B1D1BBEA394009070F7 /* AZSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F4B1C1BBEA393009070F7 /* AZSplitViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		925F4B231BBEA411009070F7 /* LeftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F4B221BBEA411009070F7 /* LeftViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		925F4B251BBEA41B009070F7 /* CenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F4B241BBEA41B009070F7 /* CenterViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		925F4B1D1BBEA394009070F7 /* AZSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F4B1C1BBEA393009070F7 /* AZSplitViewController.swift */; };
+		925F4B231BBEA411009070F7 /* LeftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F4B221BBEA411009070F7 /* LeftViewController.swift */; };
+		925F4B251BBEA41B009070F7 /* CenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F4B241BBEA41B009070F7 /* CenterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +128,7 @@
 		925F4AFF1BBEA378009070F7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Alexander Zimin";
 				TargetAttributes = {
