@@ -14,4 +14,4 @@ splitViewController.sideController = (UIStoryboard(name: "Main", bundle: nil).in
 splitViewController.mainController = (UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("Center") as! UINavigationController)
 splitViewController.templateViewController = (UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AnotherCenter") as! UINavigationController).viewControllers.first
 ```
-`templateViewController` used as mainController after rotating from full screen mode
+`templateViewController` used as `mainController` after rotating from full screen mode
