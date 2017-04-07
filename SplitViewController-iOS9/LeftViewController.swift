@@ -13,20 +13,20 @@ class LeftViewController: UIViewController { }
 // MARK: - Orientation
 
 extension LeftViewController {
-  override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-    print("LeftViewController - \(__FUNCTION__): Size: \(size)")
+  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    super.viewWillTransition(to: size, with: coordinator)
+    print("LeftViewController - \(#function): Size: \(size)")
   }
 }
 
 // MARK: - UITableViewDataSource
 
 extension LeftViewController: UITableViewDataSource {
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return 2
   }
   
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell()
     cell.textLabel?.text = (indexPath.row == 0) ? "Collection VC" : "Test VC"
     return cell
@@ -36,15 +36,15 @@ extension LeftViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension LeftViewController: UITableViewDelegate {
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
     
     if indexPath.row == 0 {
-      az_splitController?.mainController = (UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("Center") as! UINavigationController)
+      az_splitController?.mainController = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Center") as! UINavigationController)
     }
     
     if indexPath.row == 1 {
-      az_splitController?.mainController = (UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("AnotherCenter") as! UINavigationController)
+      az_splitController?.mainController = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "AnotherCenter") as! UINavigationController)
     }
     
     az_splitController?.toggleSide()

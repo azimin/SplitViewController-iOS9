@@ -16,17 +16,17 @@ class CenterViewController: UIViewController {
 }
 
 extension CenterViewController {
-  override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-    print("CenterViewController - \(__FUNCTION__): Size: \(size)")
+  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    super.viewWillTransition(to: size, with: coordinator)
+    print("CenterViewController - \(#function): Size: \(size)")
     
-    let firstCell = collectionView?.visibleCells().first ?? UICollectionViewCell()
-    guard let index = collectionView?.indexPathForCell(firstCell) else {
+    let firstCell = collectionView?.visibleCells.first ?? UICollectionViewCell()
+    guard let index = collectionView?.indexPath(for: firstCell) else {
       return
     }
     
-    coordinator.animateAlongsideTransition({ (context) -> Void in
-      self.collectionView.scrollToItemAtIndexPath(index, atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+    coordinator.animate(alongsideTransition: { (context) -> Void in
+      self.collectionView.scrollToItem(at: index, at: UICollectionViewScrollPosition.top, animated: false)
       }, completion: nil)
   }
 }
@@ -34,28 +34,28 @@ extension CenterViewController {
 // MARK: - UICollectionViewDataSource
 
 extension CenterViewController: UICollectionViewDataSource {
-  func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return numberOfCells
   }
   
-  func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as UICollectionViewCell
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as UICollectionViewCell
     
     (cell.contentView.viewWithTag(20) as? UILabel)?.text = "\(indexPath.section)-\(indexPath.row)"
     
     return cell
   }
   
-  func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    numberOfCells--;
-    collectionView.deleteItemsAtIndexPaths([indexPath])
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    numberOfCells -= 1;
+    collectionView.deleteItems(at: [indexPath])
   }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension CenterViewController: UICollectionViewDelegateFlowLayout {
-  func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     return CGSize(width: 100, height: 100)
   }
 }
