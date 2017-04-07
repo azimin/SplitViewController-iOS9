@@ -12,21 +12,24 @@ let AZSideWidth: CGFloat = 320
 let AZMinimalWidth: CGFloat = 320
 
 enum AZSplitControllerStateRules {
-  case Default
-  case WidthBase
-  case OnlyPad
-  case Custom(rule: (traitCollectio: UITraitCollection, viewSize: CGSize, sideWidth: CGFloat) -> (Bool))
 
-  func stateValue(traitCollection: UITraitCollection, viewSize: CGSize, sideWidth: CGFloat) -> Bool {
+  typealias StateRule = (_ traitCollection: UITraitCollection, _ viewSize: CGSize, _ sideWidth: CGFloat) -> (Bool)
+
+  case `default`
+  case widthBase
+  case onlyPad
+  case custom(StateRule)
+
+  func stateValue(_ traitCollection: UITraitCollection, viewSize: CGSize, sideWidth: CGFloat) -> Bool {
     switch self {
-    case .Default:
-      return traitCollection.horizontalSizeClass == .Regular && viewSize.width >= sideWidth * 2
-    case .WidthBase:
+    case .default:
+      return traitCollection.horizontalSizeClass == .regular && viewSize.width >= sideWidth * 2
+    case .widthBase:
       return viewSize.width >= sideWidth + AZMinimalWidth
-    case .OnlyPad:
-      return traitCollection.userInterfaceIdiom == .Pad && traitCollection.horizontalSizeClass == .Regular && viewSize.width > sideWidth
-    case .Custom(rule: let rule):
-      return rule(traitCollectio: traitCollection, viewSize: viewSize, sideWidth: sideWidth)
+    case .onlyPad:
+      return traitCollection.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass == .regular && viewSize.width > sideWidth
+    case let .custom(rule):
+      return rule(traitCollection, viewSize, sideWidth)
     }
   }
 }
@@ -53,8 +56,8 @@ class AZSplitController: UIViewController {
     }
   }
   
-  private var sideControllerSize: CGSize = CGSizeZero
-  private var mainControllerSize: CGSize = CGSizeZero
+  fileprivate var sideControllerSize: CGSize = .zero
+  fileprivate var mainControllerSize: CGSize = .zero
   
   var templateViewController: UIViewController!
   
@@ -65,15 +68,15 @@ class AZSplitController: UIViewController {
       separatorView.backgroundColor = separatorViewColor
     }
   }
-  private var separatorView: UIView!
+  fileprivate var separatorView: UIView!
   
   // MARK: - Indents
   
-  private var sideCurrentWidth: CGFloat {
+  fileprivate var sideCurrentWidth: CGFloat {
     return isSideOpen ? sideWidth : 0
   }
   
-  private var sideIndent: CGFloat {
+  fileprivate var sideIndent: CGFloat {
     return sideCurrentWidth - sideWidth
   }
   
@@ -81,22 +84,22 @@ class AZSplitController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.view.backgroundColor = UIColor.whiteColor()
+    self.view.backgroundColor = .white
     recalculateState(view.bounds.size)
   }
   
   // MARK: - States
   
-  var rules: AZSplitControllerStateRules = .WidthBase
-  var animationDuration: NSTimeInterval = 0.2
+  var rules: AZSplitControllerStateRules = .widthBase
+  var animationDuration: TimeInterval = 0.2
   
-  private(set) var isSideOpen: Bool = false
-  private(set) var sideWidth: CGFloat = AZSideWidth
+  fileprivate(set) var isSideOpen: Bool = false
+  fileprivate(set) var sideWidth: CGFloat = AZSideWidth
   
-  private var isControllerContainsSideMenu: Bool = false
+  fileprivate var isControllerContainsSideMenu: Bool = false
   
   // return yes if need to to cahnge
-  func recalculateState(size: CGSize) -> Bool {
+  func recalculateState(_ size: CGSize) -> Bool {
     let traitCollection = newCollection ?? self.traitCollection
     
     let newState = rules.stateValue(traitCollection, viewSize: size, sideWidth: sideWidth)
@@ -111,14 +114,14 @@ class AZSplitController: UIViewController {
   
   // MARK: - UIContentContainer
   
-  private weak var newCollection: UITraitCollection?
+  fileprivate weak var newCollection: UITraitCollection?
   
-  override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+  override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
     self.newCollection = newCollection
-    super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+    super.willTransition(to: newCollection, with: coordinator)
   }
   
-  override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     if recalculateState(size) {
       changeState(size, withTransitionCoordinator: coordinator)
       return
@@ -140,7 +143,7 @@ class AZSplitController: UIViewController {
       sideControllerSize = rect.size
     }
     
-    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+    super.viewWillTransition(to: size, with: coordinator)
     
     animation({ () -> () in
       if self.isControllerContainsSideMenu {
@@ -152,7 +155,7 @@ class AZSplitController: UIViewController {
       }, withTransitionCoordinator: coordinator)
   }
   
-  override func sizeForChildContentContainer(container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
+  override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
     if container.isEqual(sideController) {
       return sideControllerSize
     }
@@ -161,14 +164,14 @@ class AZSplitController: UIViewController {
       return mainControllerSize
     }
     
-    return super.sizeForChildContentContainer(container, withParentContainerSize: parentSize)
+    return super.size(forChildContentContainer: container, withParentContainerSize: parentSize)
   }
   
   // MARK: - State changing
   
   var cachedViewControllers: [UIViewController] = []
   
-  private func changeState(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+  fileprivate func changeState(_ size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
     let bounds = CGRect(x: 0, y: 0, width: size.width, height: size.height)
     
     isSideOpen = false
@@ -178,9 +181,9 @@ class AZSplitController: UIViewController {
       for controller in self.sideController.viewControllers {
         controllers.append(controller)
       }
-      controllers.removeAtIndex(0)
+      controllers.remove(at: 0)
       
-      sideController.popToRootViewControllerAnimated(false)
+      sideController.popToRootViewController(animated: false)
       
       mainController = UINavigationController()
       mainController.viewControllers = controllers.count > 0 ? controllers : [templateViewController]
@@ -192,7 +195,7 @@ class AZSplitController: UIViewController {
       mainControllerSize = mainRect.size
       sideControllerSize = sideRect.size
       
-      super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+      super.viewWillTransition(to: size, with: coordinator)
       
       animation({ () -> () in
         self.sideController.view.frame = sideRect
@@ -207,13 +210,13 @@ class AZSplitController: UIViewController {
       }
       controllers.first?.navigationItem.leftBarButtonItem = nil
       
-      mainController.popToRootViewControllerAnimated(false)
+      mainController.popToRootViewController(animated: false)
       mainController.view.removeFromSuperview()
       
       sideControllerSize = bounds.size
-      mainControllerSize = CGSizeZero
+      mainControllerSize = .zero
       
-      super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+      super.viewWillTransition(to: size, with: coordinator)
       
       sideController.viewControllers = [self.sideController.viewControllers.first!] + controllers
       
@@ -225,13 +228,13 @@ class AZSplitController: UIViewController {
     }
   }
   
-  private func setupMainController(controller: UINavigationController?) {
+  fileprivate func setupMainController(_ controller: UINavigationController?) {
     guard let controller = controller else {
       return
     }
     
     self.addChildViewController(controller)
-    controller.didMoveToParentViewController(self)
+    controller.didMove(toParentViewController: self)
     
     if !isControllerContainsSideMenu {
       self.isSideOpen = true
@@ -253,16 +256,16 @@ class AZSplitController: UIViewController {
     self.view.addSubview(mainController.view)
   }
   
-  private func setupSideController(controller: UINavigationController?) {
+  fileprivate func setupSideController(_ controller: UINavigationController?) {
     guard let controller = controller else {
       return
     }
     
     self.addChildViewController(controller)
-    controller.didMoveToParentViewController(self)
+    controller.didMove(toParentViewController: self)
     
-    controller.view.frame = self.isControllerContainsSideMenu ? CGRectMake(sideIndent, 0, sideWidth, self.view.bounds.size.height) : self.view.bounds
-    controller.view.autoresizingMask = UIViewAutoresizing.None
+    controller.view.frame = self.isControllerContainsSideMenu ? CGRect(x: sideIndent, y: 0, width: sideWidth, height: self.view.bounds.size.height) : self.view.bounds
+    controller.view.autoresizingMask = UIViewAutoresizing()
     sideControllerSize = controller.view.bounds.size
     
     self.view.addSubview(controller.view)
@@ -277,19 +280,19 @@ class AZSplitController: UIViewController {
   
   // MARK: - Separator actions
   
-  private func addSeparator() {
+  fileprivate func addSeparator() {
     addSeparator(self.view.bounds.size)
   }
   
-  private func addSeparator(size: CGSize) {
+  fileprivate func addSeparator(_ size: CGSize) {
     removeSeparator()
     separatorView = UIView(frame: CGRect(x: sideWidth - 1, y: 0, width: 1, height: size.height))
-    separatorView.autoresizingMask = .FlexibleHeight
+    separatorView.autoresizingMask = .flexibleHeight
     separatorView.backgroundColor = separatorViewColor
     sideController.topViewController?.view.addSubview(separatorView)
   }
   
-  private func removeSeparator() {
+  fileprivate func removeSeparator() {
     separatorView?.removeFromSuperview()
   }
   
@@ -312,7 +315,7 @@ class AZSplitController: UIViewController {
     
     isSideOpen = true
     
-    UIView.animateWithDuration(animationDuration, animations: {
+    UIView.animate(withDuration: animationDuration, animations: {
       var sideFrame = self.sideController.view.frame
       sideFrame.origin.x = 0
       self.sideController.view.frame = sideFrame
@@ -339,7 +342,7 @@ class AZSplitController: UIViewController {
       return;
     }
     
-    UIView.animateWithDuration(animationDuration, animations: {
+    UIView.animate(withDuration: animationDuration, animations: {
       var sideFrame = self.sideController.view.frame;
       sideFrame.origin.x = -self.sideWidth;
       self.sideController.view.frame = sideFrame;
@@ -355,16 +358,16 @@ class AZSplitController: UIViewController {
   
   // MARK: - Helpers
   
-  private func removeChildViewController(viewController: UIViewController?) {
+  fileprivate func removeChildViewController(_ viewController: UIViewController?) {
     if let viewController = viewController {
-      viewController.willMoveToParentViewController(nil)
+      viewController.willMove(toParentViewController: nil)
       viewController.view.removeFromSuperview()
       viewController.removeFromParentViewController()
     }
   }
   
-  private func animation(animation: () ->(), withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-    coordinator.animateAlongsideTransition({ context in
+  fileprivate func animation(_ animation: @escaping () ->(), withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    coordinator.animate(alongsideTransition: { context in
       animation()
       }, completion: nil)
   }
@@ -374,13 +377,13 @@ class AZSplitController: UIViewController {
 
 extension UIViewController {
   var az_splitController: AZSplitController? {
-    var controller = self.parentViewController
+    var controller = self.parent
     
     while controller != nil {
       if let az_Controller = controller as? AZSplitController {
         return az_Controller
       }
-      controller = controller?.parentViewController
+      controller = controller?.parent
     }
     
     return nil
@@ -390,7 +393,7 @@ extension UIViewController {
 extension UINavigationController {
   func az_addMenuButton() {
     if let topItem = viewControllers.first?.navigationItem {
-      topItem.leftBarButtonItem = UIBarButtonItem(title: "Menu", style: .Plain, target: self.az_splitController, action: "toggleSide")
+      topItem.leftBarButtonItem = UIBarButtonItem(title: "Menu", style: .plain, target: self.az_splitController, action: #selector(AZSplitController.toggleSide))
     }
   }
   
